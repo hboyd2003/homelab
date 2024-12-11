@@ -64,7 +64,7 @@ nodes:
               ip: "#{ bootstrap_controller_vip }#"
             #% endif %#
         #% else %#
-        dhcp: false
+        dhcp: true
         addresses:
           - "#{ item.address }#/#{ bootstrap_node_network.split('/') | last }#"
         routes:
