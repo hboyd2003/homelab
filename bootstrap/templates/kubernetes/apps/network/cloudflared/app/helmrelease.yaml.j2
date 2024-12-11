@@ -32,7 +32,7 @@ spec:
               repository: docker.io/cloudflare/cloudflared
               tag: 2024.11.1
             env:
-              NO_AUTOUPDATE: true
+              NO_AUTOUPDATE: false
               TUNNEL_CRED_FILE: /etc/cloudflared/creds/credentials.json
               TUNNEL_METRICS: 0.0.0.0:8080
               TUNNEL_ORIGIN_ENABLE_HTTP2: true
@@ -45,8 +45,6 @@ spec:
                     key: TUNNEL_ID
             args:
               - tunnel
-              - --config
-              - /etc/cloudflared/config/config.yaml
               - run
               - "$(TUNNEL_ID)"
             probes:
