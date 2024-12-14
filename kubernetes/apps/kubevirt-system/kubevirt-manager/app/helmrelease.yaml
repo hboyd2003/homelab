@@ -1,0 +1,32 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app kubevirt-manager
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: kubevirt-manager
+      version: 0.4.6
+      sourceRef:
+        kind: HelmRepository
+        name: cloudymax
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    ingress:
+      enabled: true
+      annotations."cert-manager.io/cluster-issuer": "letsencrypt-production"
+      className: external
+      hostname: "kubevirt.${SECRET_DOMAIN}"

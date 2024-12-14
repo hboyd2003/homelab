@@ -1,0 +1,8 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+  - ./kubevirt/ks.yaml
+  - ./vm/kustomization.yaml
+  - ./kubevirt-manager/ks.yaml
