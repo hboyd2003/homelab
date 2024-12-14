@@ -25,7 +25,7 @@ spec:
   values:
     virtualMachine:
       name: "test"
-      namespace: "kubevirt"
+      namespace: "kubevirt-vm"
       machine:
         memory:
           base: 2Gi
