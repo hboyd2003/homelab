@@ -2,8 +2,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: cloudymax
+  name: kubevirt-community-stack
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://cloudymax.github.io
+  url: https://cloudymax.github.io/kubevirt-community-stack/
