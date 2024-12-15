@@ -30,3 +30,5 @@ spec:
       annotations."cert-manager.io/cluster-issuer": "letsencrypt-production"
       className: external
       hostname: "kubevirt.${SECRET_DOMAIN}"
+    prometheus:
+      enabled: false
