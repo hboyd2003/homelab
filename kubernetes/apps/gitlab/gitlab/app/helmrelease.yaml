@@ -1,0 +1,120 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: gitlab
+      version: 8.6.2
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    global:
+      hosts:
+        domain: ${SECRET_DOMAIN}
+        hostSuffix: staging
+        https: true
+        gitlab:
+          name: gitlab.${SECRET_DOMAIN}
+          https: true
+        ssh: gitlab.${SECRET_DOMAIN}
+      ingress:
+        enabled: true
+        configureCertmanager: false
+        class: external
+        tls.secretName: "${SECRET_DOMAIN/./-}-production"
+      certificates:
+        customCAs:
+          - secret: gitlab-secret
+            keys:
+              - cloudflare-ecc-origin-ca.crt
+                cloudflare-rsa-origin-ca.crt
+      psql:
+        username: gitlab
+        password:
+          useSecret: true
+          secret: gitlab-secret
+          key: postgresql-password
+      redis:
+        user: gitlab
+        auth:
+          secret: gitlab-secret
+          key: redis-password
+      gitaly: # We use our own
+        enabled: false
+        external:
+          - name: default
+            hostname: [nas.przmo.com:8075]
+        authtoken:
+          secret: gitlab-secret
+          key: shell-token
+        tls:
+          enabled: true
+      appConfig:
+        contentSecurityPolicy:
+          enabled: false
+          report_only: true
+        enableUsagePing: true
+        enableSeatLink: true
+        enableImpersonation: true
+        applicationSettingsCacheSeconds: 60
+        usernameChangingEnabled: true
+        object_store:
+          enabled: true
+          proxy_download: true
+          storage_options: {}
+          connection:
+            secret: gitlab-secret
+            key: minio-connection
+        lfs:
+          enabled: true
+          proxy_download: true
+          bucket: git-lfs
+        artifacts:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-artifacts
+        uploads:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-uploads
+        packages:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-packages
+        externalDiffs:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-external-diffs
+        terraformState:
+          enabled: true
+          bucket: gitlab-terraform-state
+        ciSecureFiles:
+          enabled: true
+          bucket: gitlab-ci-secure-files
+        dependencyProxy:
+          enabled: true
+          bucket: gitlab-dependency-proxy
+        backups:
+          bucket: gitlab-backups
+      minio: # We use our own
+        enabled: false
+      nginx-ingress: # We use our own
+        enabled: false
+      certmanager: # We use our own
+        install: false
+
+
+
