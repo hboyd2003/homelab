@@ -111,10 +111,10 @@ spec:
           bucket: gitlab-backups
       minio: # We use our own
         enabled: false
-      nginx-ingress: # We use our own
-        enabled: false
-      certmanager: # We use our own
-        install: false
+    nginx-ingress: # We use our own
+      enabled: false
+    certmanager: # We use our own
+      install: false
 
 
 
